@@ -12,11 +12,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
+import environ
 import mimetypes
 mimetypes.add_type("text/css", ".css", True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(_file_).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     'django.contrib.humanize',
     "import_export",
@@ -50,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -81,17 +85,23 @@ WSGI_APPLICATION = "leave_management.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mietLMS",
-        "USER": "postgres",
-        "PASSWORD":"2010",
-        "HOST":"localhost",
-        "PORT" : "5433",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "MietLMS",
+#         "USER": "postgres",
+#         "PASSWORD":"2010",
+#         "HOST":"localhost",
+#         "PORT" : "5433",
+#     }
+# }
 
+env = environ.Env()
+environ.Env.read_env()
+
+DATABASES = {
+    "default": dj_database_url.parse('postgres://shreya:CjEG91zkqBoYErXd2duwUDRrY1KYXvtg@dpg-cikpuilph6eg6kd48vp0-a.singapore-postgres.render.com/testdb_ek4e')
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -123,12 +133,13 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR),'static_cdn','static_root')
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'static_in_proj','our_static'),
+# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR),'static_cdn','static_root')
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+#STATICFILES_DIRS = [
+ #   os.path.join(BASE_DIR,'static_in_proj','our_static'),
     # os.path.join(BASE_DIR, "static"),
-]
+#]
 
 
 MEDIA_URL = '/media/'
