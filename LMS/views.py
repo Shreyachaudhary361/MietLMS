@@ -10,9 +10,13 @@ from django.urls import reverse
 
 
 def home(request):
+    if request.user.is_authenticated:
+	return redirect('/dashboard')
     return render(request,'home.html')
 
 def login_view(request):
+    if request.user.is_authenticated:
+	return redirect('/dashboard')
     form = LoginForm(request.POST or None)
     msg = None
     if request.method == 'POST':
